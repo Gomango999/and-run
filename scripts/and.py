@@ -1,74 +1,15 @@
+#!/usr/bin/env python3
 import click
 import os
 import datetime
 import timeit
 
-root_dir = "/Users/kevin/projects/cp_scripts"
-
-SUCCESS_CODE = 0
-FAILED_CODE = 1
-
-class bcolors:
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[91m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+from constants import *
+from files import *
 
 @click.group()
 def And():
     pass
-
-def file_len(fname):
-    with open(fname) as f:
-        for i, l in enumerate(f):
-            pass
-    return i + 1
-
-def file_head(fname, num):
-    with open(fname) as f:
-        return "".join(f.readlines()[0:num])
-
-# Selects an input file to be used
-# If multiple, selects the first one
-def get_input_file():
-    cwd = os.getcwd()
-    input_files = []
-    for f in os.listdir(cwd):
-        filename, file_extension = os.path.splitext(f)
-        # Find default input file
-        if ".txt" == file_extension:
-            if "in" == filename.lower()[-2:]:
-                input_files.append(f)
-            elif "input" in filename:
-                input_files.append(f)
-        elif ".in" == file_extension:
-            input_files.append(f)
-    input_files.sort()
-
-    if len(input_files) == 0:
-        return None
-    return input_files[0]
-
-# Selects a cpp file to be used
-# If multiple, selects the first one
-def get_cpp_file():
-    cwd = os.getcwd()
-    cpp_files = []
-    for f in os.listdir(cwd):
-        filename, file_extension = os.path.splitext(f)
-        # Find cpp file
-        if ".cpp" == file_extension:
-            if "test" in f.lower():
-                continue
-            cpp_files.append(f)
-    cpp_files.sort()
-
-    if len(cpp_files) == 0:
-        return None
-    return cpp_files[0]
 
 # Runs a script with nicely formatted printing
 def pretty_run(input_file, cpp_file):
@@ -94,30 +35,52 @@ def pretty_run(input_file, cpp_file):
         print("--------[Done | {:.2}s]--------".format(run_time))
     exit_code
 
+# Compiles a file
+@And.command()
+@click.option('-f', '--file', 'cpp_file', type=click.Path(exists=True, dir_okay=False), default=None)
+def compile(cpp_file):
+    if cpp_file == None:
+        cpp_file = get_cpp_file()
+    if cpp_file == None:
+        print("No cpp file found")
+        exit(FAILED_CODE)
+
+    cpp_filename, _ = os.path.splitext(cpp_file)
+
+    exit_code = os.system(f"g++ -o _{cpp_filename} -std=c++17 -Wall {cpp_file}")
+    if exit_code != SUCCESS_CODE:
+        exit(exit_code);
+    return cpp_file
+
+# Compiles and runs a cpp file
 @And.command()
 @click.option('-i', '--input', 'input_file', type=click.Path(exists=True, dir_okay=False), default=None)
 @click.option('-f', '--file', 'cpp_file', type=click.Path(exists=True, dir_okay=False), default=None)
 def run(input_file, cpp_file):
-    cpp_file = get_cpp_file() if cpp_file == None else cpp_file
+    if cpp_file == None:
+        cpp_file = get_cpp_file()
     if cpp_file == None:
         print("No cpp file found")
         exit(FAILED_CODE)
-    cpp_filename, _ = os.path.splitext(cpp_file)
-    input_file = get_input_file() if input_file == None else input_file
 
-    exit_code = os.system(f"g++ -o {cpp_filename} -std=c++17 -Wall {cpp_file}")
+    cpp_filename, _ = os.path.splitext(cpp_file)
+
+    exit_code = os.system(f"g++ -o _{cpp_filename} -std=c++17 -Wall {cpp_file}")
     if exit_code != SUCCESS_CODE:
         exit(exit_code);
 
+    if input_file == None:
+        input_file = get_input_file()
     if input_file == None:
         exit(os.system(f"./{cpp_filename}"))
 
     exit_code = pretty_run(input_file, cpp_file)
     exit(exit_code)
 
+
 # Checks the done list to see if a problem is done or not
 def check_done(file):
-    done_list = root_dir + "/done_list.txt"
+    done_list = root_dir() + "/build/done_list.txt"
     with open(done_list, "r+") as f:
         for line in f:
             if file == line.strip():
@@ -135,7 +98,7 @@ def done():
         return
 
     # Not found, mark as complete
-    done_list = root_dir + "/done_list.txt"
+    done_list = root_dir() + "/build/done_list.txt"
     with open(done_list, "a") as f:
         f.write(cwd + "\n")
         print(f"{bcolors.OKGREEN}", end="")
@@ -143,7 +106,7 @@ def done():
         print(f"{bcolors.ENDC}", end="")
 
 
-# Checks all the folders in the current directory, and 
+# Checks all the folders in the current directory, and
 # and displays which ones have been completed
 @And.command()
 def check():
@@ -187,26 +150,33 @@ def initletters(letter):
         if ch == letter:
             break
 
+@And.command()
+@click.argument('type', type=click.Choice(["standard", "cases"], case_sensitive=False), default="standard")
+def init(type):
+    template_path = ""
+    if (type == "standard"):
+         template_path = root_dir() + "/config/templates/standard.cpp"
+    if (type == "cases"):
+         template_path = root_dir() + "/config/templates/cases.cpp"
+    filename = get_basename() + ".cpp"
+    if os.path.exists(os.path.join(os.getcd cwd(), filename)):
+        print("File already exists")
+        exit(FAILED_CODE)
+    exit(os.system(f"cp {template_path} ./{filename}"))
+
 # Go to next unsolved question
 @And.command()
 def next():
     pass
 
-
 # Use a generator and two programs to compare outputs
 # and find which inputs generates a different output.
 #   Useful when you have brute force program that you
 #   know works, and a another one that is failing some
-#   tests. 
+#   tests.
 @And.command()
 def comp():
     pass
 
 if __name__ == "__main__":
     And()
-
-
-
-
-
-
