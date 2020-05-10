@@ -1,7 +1,7 @@
 # And Run
 And Run is a cli tool that aids in speeding up the repetitive tasks in competitive programming. This includes initialising cpp files with templates, automatically compiling and running on the most likely cpp and input files, initalising contest workspaces and navigating problem folders.
 
-This tool is still under development and is missing many key features. I haven't even set up a proper .gitignore yet :).
+This tool is still under development and is missing many key features.
 
 ## Usage
 ```
