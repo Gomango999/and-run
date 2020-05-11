@@ -1,7 +1,7 @@
 # And Run
 And Run is a CLI tool that aids in speeding up the repetitive tasks in competitive programming, aimed to be both efficient and convenient to use. The overall goal is for this tool to assist in contest management, compilation and running, and debugging of code in competive scenarios.
 
-And Run is still under development and is missing many key features.
+And Run is a personal tool, and is still under development.
 
 ## Usage
 ```sh
@@ -15,7 +15,7 @@ Generates folders from A to any letter.
 ```sh
 and init [standard|cases]
 ``
-Gener
+Generates a template cpp file. All templates include define macros and typedefs. Standard just has a main function, whereas cases also includes support by running the program repeatedly on multiple tests.
 
 
 ## Upcoming features
