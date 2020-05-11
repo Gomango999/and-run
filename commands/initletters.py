@@ -6,9 +6,8 @@ sys.path.append('../')
 from scripts.constants import *
 
 # Initialise a bunch of folders with alphabet letters
-alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 @click.command()
-@click.argument('letter', type=click.Choice(alphabet, case_sensitive=False), default="L")
+@click.argument('letter', type=click.Choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ", case_sensitive=False), default="F")
 def initletters(letter):
    letter = letter.upper()
    for ch in alphabet:

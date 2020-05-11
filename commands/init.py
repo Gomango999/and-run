@@ -14,10 +14,12 @@ def init(type):
          template_path = root_dir() + "/config/templates/standard.cpp"
     if (type == "cases"):
          template_path = root_dir() + "/config/templates/cases.cpp"
+
     filename = get_basename() + ".cpp"
     if os.path.exists(os.path.join(os.getcwd(), filename)):
         print("File already exists")
         exit(FAILED_CODE)
+        
     exit_code = os.system(f"cp {template_path} ./{filename}")
     if (exit_code == SUCCESS_CODE):
         print(f"Successfully created {filename}")

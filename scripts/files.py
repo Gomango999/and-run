@@ -9,8 +9,10 @@ def file_len(filename):
     return i + 1
 
 # Returns the first n lines of a file.
+# Requires that the file has at least n lines
 def file_head(filename, n):
     with open(filename) as f:
+        assert(len(f.readlines()) >= n)
         return "".join(f.readlines()[0:n])
 
 # Automatically selects the file that is most likely the input file
@@ -18,7 +20,7 @@ def file_head(filename, n):
 #   - A .txt file ending in 'in.txt',
 #   - A .txt file with input in its name, or
 #   - A .in file
-def get_input_file():
+def get_input_filename():
     cwd = os.getcwd()
     input_files = []
     for f in os.listdir(cwd):
@@ -45,7 +47,7 @@ def get_input_file():
 #   - ends in .cpp, and
 #   - does not contain test in its name
 # TODO: Make it more likely to match with files that match the folder name
-def get_cpp_file():
+def get_cpp_filename():
     cwd = os.getcwd()
     cpp_files = []
     for f in os.listdir(cwd):
@@ -64,4 +66,4 @@ def get_cpp_file():
 # Returns the current basename
 def get_basename():
     cwd = os.getcwd()
-    return os.path.basename(os.path.normpath(cwd))
+    return os.path.basename(os.path.normpath(os.getcwd()))

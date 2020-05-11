@@ -8,10 +8,10 @@ from scripts.constants import *
 from scripts.files import *
 
 # Runs a script with nicely formatted printing
+MAX_LINES = 10 # Max number of lines of the input file to display
 def pretty_run(input_file, cpp_file):
     cpp_filename, _ = os.path.splitext(cpp_file)
     print(f"--------[Input | {input_file}]--------")
-    MAX_LINES = 10
     with open(input_file) as in_file:
         if file_len(input_file) > MAX_LINES:
             print(file_head(input_file, MAX_LINES), end="")
@@ -20,10 +20,10 @@ def pretty_run(input_file, cpp_file):
             print(in_file.read(), end="")
 
     print(f"--------[Output | {cpp_file}]--------")
-    start = timeit.default_timer()
+    start_time = timeit.default_timer()
     exit_code = os.system(f"./{cpp_filename} < {input_file}")
-    stop = timeit.default_timer()
-    run_time = stop-start
+    stop_time = timeit.default_timer()
+    run_time = stop_time-start_time
 
     if exit_code != SUCCESS_CODE:
         print("--------[Failed | {:.2}s]--------".format(run_time))
@@ -33,25 +33,27 @@ def pretty_run(input_file, cpp_file):
 
 # Compiles and runs a cpp file
 @click.command()
-@click.option('-i', '--input', 'input_file', type=click.Path(exists=True, dir_okay=False), default=None)
+@click.option('-i', '--input', 'input_filename', type=click.Path(exists=True, dir_okay=False), default=None)
 @click.option('-f', '--file', 'cpp_file', type=click.Path(exists=True, dir_okay=False), default=None)
-def run(input_file, cpp_file):
-    if cpp_file == None:
-        cpp_file = get_cpp_file()
-    if cpp_file == None:
+def run(input_filename, cpp_filename):
+    if cpp_filename == None:
+        cpp_filename = get_cpp_filename()
+    if cpp_filename == None:
         print("No cpp file found")
         exit(FAILED_CODE)
 
-    cpp_filename, _ = os.path.splitext(cpp_file)
+    cpp_fileroot, _ = os.path.splitext(cpp_filename)
 
-    exit_code = os.system(f"g++ -o {cpp_filename} -std=c++17 -Wall {cpp_file}")
+    exit_code = os.system(f"g++ -o {cpp_fileroot} -std=c++17 -Wall {cpp_filename}")
     if exit_code != SUCCESS_CODE:
         exit(exit_code);
 
-    if input_file == None:
-        input_file = get_input_file()
-    if input_file == None:
-        exit(os.system(f"./{cpp_filename}"))
-
-    exit_code = pretty_run(input_file, cpp_file)
-    exit(exit_code)
+    if input_filename == None:
+        input_filename = get_input_filename()
+    if input_filename == None:
+        # Run on standard input and output
+        exit(os.system(f"./{cpp_fileroot}"))
+    else:
+        # Run on input file
+        exit_code = pretty_run(input_filename, cpp_filename)
+        exit(exit_code)
