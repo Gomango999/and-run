@@ -14,7 +14,7 @@ and initletters [A|B|C|...|Z]
 Generates folders from A to any letter.
 ```sh
 and init [standard|cases]
-``
+```
 Generates a template cpp file. All templates include define macros and typedefs. Standard just has a main function, whereas cases also includes support by running the program repeatedly on multiple tests.
 
 
