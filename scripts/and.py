@@ -35,23 +35,6 @@ def pretty_run(input_file, cpp_file):
         print("--------[Done | {:.2}s]--------".format(run_time))
     exit_code
 
-# Compiles a file
-@And.command()
-@click.option('-f', '--file', 'cpp_file', type=click.Path(exists=True, dir_okay=False), default=None)
-def compile(cpp_file):
-    if cpp_file == None:
-        cpp_file = get_cpp_file()
-    if cpp_file == None:
-        print("No cpp file found")
-        exit(FAILED_CODE)
-
-    cpp_filename, _ = os.path.splitext(cpp_file)
-
-    exit_code = os.system(f"g++ -o _{cpp_filename} -std=c++17 -Wall {cpp_file}")
-    if exit_code != SUCCESS_CODE:
-        exit(exit_code);
-    return cpp_file
-
 # Compiles and runs a cpp file
 @And.command()
 @click.option('-i', '--input', 'input_file', type=click.Path(exists=True, dir_okay=False), default=None)
@@ -65,7 +48,7 @@ def run(input_file, cpp_file):
 
     cpp_filename, _ = os.path.splitext(cpp_file)
 
-    exit_code = os.system(f"g++ -o _{cpp_filename} -std=c++17 -Wall {cpp_file}")
+    exit_code = os.system(f"g++ -o {cpp_filename} -std=c++17 -Wall {cpp_file}")
     if exit_code != SUCCESS_CODE:
         exit(exit_code);
 
@@ -78,77 +61,77 @@ def run(input_file, cpp_file):
     exit(exit_code)
 
 
-# Checks the done list to see if a problem is done or not
-def check_done(file):
-    done_list = root_dir() + "/build/done_list.txt"
-    with open(done_list, "r+") as f:
-        for line in f:
-            if file == line.strip():
-                return True
-    return False
+# # Checks the done list to see if a problem is done or not
+# def check_done(file):
+#     done_list = root_dir() + "/build/done_list.txt"
+#     with open(done_list, "r+") as f:
+#         for line in f:
+#             if file == line.strip():
+#                 return True
+#     return False
 
-# Mark a problem as complete
-@And.command()
-def done():
-    # Check if already completed
-    cwd = os.getcwd()
-    problem_name = os.path.basename(cwd)
-    if check_done(cwd):
-        print(f"Already completed {problem_name}")
-        return
+# # Mark a problem as complete
+# @And.command()
+# def done():
+#     # Check if already completed
+#     cwd = os.getcwd()
+#     problem_name = os.path.basename(cwd)
+#     if check_done(cwd):
+#         print(f"Already completed {problem_name}")
+#         return
+#
+#     # Not found, mark as complete
+#     done_list = root_dir() + "/build/done_list.txt"
+#     with open(done_list, "a") as f:
+#         f.write(cwd + "\n")
+#         print(f"{bcolors.OKGREEN}", end="")
+#         print(f"✓ {problem_name} marked as completed")
+#         print(f"{bcolors.ENDC}", end="")
 
-    # Not found, mark as complete
-    done_list = root_dir() + "/build/done_list.txt"
-    with open(done_list, "a") as f:
-        f.write(cwd + "\n")
-        print(f"{bcolors.OKGREEN}", end="")
-        print(f"✓ {problem_name} marked as completed")
-        print(f"{bcolors.ENDC}", end="")
 
-
-# Checks all the folders in the current directory, and
-# and displays which ones have been completed
-@And.command()
-def check():
-    cwd = os.getcwd()
-    files = next(os.walk(cwd))[1]
-    files.sort()
-
-    # Get stats
-    total = 0
-    completed = 0
-    for filename in files:
-        total += 1
-        if check_done(f"{cwd}/{filename}"):
-            completed += 1
-    if total == 0:
-        print("No folders in this directory")
-        exit(FAILED_CODE)
-
-    print(f"{bcolors.ENDC}", end="")
-    print(f"--------[Completed | {completed}/{total}]--------")
-
-    # List out files
-    for filename in files:
-        done = check_done(f"{cwd}/{filename}")
-        if done:
-            symbol = bcolors.OKGREEN + "✓"
-        else:
-            symbol = bcolors.FAIL + "✘"
-        print(f" {symbol} {filename}")
+# # Checks all the folders in the current directory, and
+# # and displays which ones have been completed
+# @And.command()
+# def check():
+#     cwd = os.getcwd()
+#     files = next(os.walk(cwd))[1]
+#     files.sort()
+#
+#     # Get stats
+#     total = 0
+#     completed = 0
+#     for filename in files:
+#         total += 1
+#         if check_done(f"{cwd}/{filename}"):
+#             completed += 1
+#     if total == 0:
+#         print("No folders in this directory")
+#         exit(FAILED_CODE)
+#
+#     print(f"{bcolors.ENDC}", end="")
+#     print(f"--------[Completed | {completed}/{total}]--------")
+#
+#     # List out files
+#     for filename in files:
+#         done = check_done(f"{cwd}/{filename}")
+#         if done:
+#             symbol = bcolors.OKGREEN + "✓"
+#         else:
+#             symbol = bcolors.FAIL + "✘"
+#         print(f" {symbol} {filename}")
 
 # Initialise a bunch of folders with alphabet letters
 alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 @And.command()
 @click.argument('letter', type=click.Choice(alphabet, case_sensitive=False), default="L")
 def initletters(letter):
-    letter = letter.upper()
-    for ch in alphabet:
-        exit_code = os.system(f"mkdir {ch}")
-        if exit_code == SUCCESS_CODE:
-            print(f"mkdir: {ch}: Successfully made")
-        if ch == letter:
-            break
+   letter = letter.upper()
+   for ch in alphabet:
+       exit_code = os.system(f"mkdir {ch}")
+       if exit_code == SUCCESS_CODE:
+           print(f"mkdir: {ch}: Successfully made")
+       if ch == letter:
+           break
 
 @And.command()
 @click.argument('type', type=click.Choice(["standard", "cases"], case_sensitive=False), default="standard")
