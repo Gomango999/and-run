@@ -159,24 +159,10 @@ def init(type):
     if (type == "cases"):
          template_path = root_dir() + "/config/templates/cases.cpp"
     filename = get_basename() + ".cpp"
-    if os.path.exists(os.path.join(os.getcd cwd(), filename)):
+    if os.path.exists(os.path.join(os.getcwd(), filename)):
         print("File already exists")
         exit(FAILED_CODE)
     exit(os.system(f"cp {template_path} ./{filename}"))
-
-# Go to next unsolved question
-@And.command()
-def next():
-    pass
-
-# Use a generator and two programs to compare outputs
-# and find which inputs generates a different output.
-#   Useful when you have brute force program that you
-#   know works, and a another one that is failing some
-#   tests.
-@And.command()
-def comp():
-    pass
 
 if __name__ == "__main__":
     And()
