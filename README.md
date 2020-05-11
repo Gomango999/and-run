@@ -19,12 +19,12 @@ Generates a template cpp file. All templates include define macros and typedefs.
 
 
 ## Upcoming features
-- Compilation and running  
+- Compiling and Running Code
     - Automatic compilation of all cpp files in a folder
-- Faster debugging, which will be done by
+- Faster Debugging
     - Tools to help find discrepant outputs based on a brute force solution and a random input generator
     - Tools to help find incorrect inputs based on a checker algorithm and a random input generator
-- Contest workspaces, which will allow
+- Generating Contest Workspaces
     - Automatic generation of multiple folders and code templates
     - Marking problems as complete
     - Seeing an overview of completed problems
@@ -33,4 +33,4 @@ Generates a template cpp file. All templates include define macros and typedefs.
 
 
 ## Technologies
-And Run was coded in Python3 using the Click library.
+And Run was coded in Python3 using the Click library. It is aimed at competitive programming in C++.
