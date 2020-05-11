@@ -1,20 +1,36 @@
 # And Run
-And Run is a cli tool that aids in speeding up the repetitive tasks in competitive programming. This includes initialising cpp files with templates, automatically compiling and running on the most likely cpp and input files, initalising contest workspaces and navigating problem folders.
+And Run is a CLI tool that aids in speeding up the repetitive tasks in competitive programming, aimed to be both efficient and convenient to use. The overall goal is for this tool to assist in contest management, compilation and running, and debugging of code in competive scenarios.
 
-This tool is still under development and is missing many key features.
+And Run is still under development and is missing many key features.
 
 ## Usage
-```
+```sh
 and run
 ```
-Finds the most likely cpp file, and most likely input text file, then compiles and runs your program on that. It will print out the input and output, next to each other for easy comparison, as well as the time taken to run the program.
+Automatically finds the cpp file, as well as any input and output files if any, and then prints out the result of the program. It will print the input and output side by side for easy comparison.
+```sh
+and initletters [A|B|C|...|Z]
+```
+Generates folders from A to any letter.
+```sh
+and init [standard|cases]
+``
+Gener
+
 
 ## Upcoming features
-- Ability to compare output with brute force algorithms, and easily find discrepant test cases.
-- Easier navigation of problems
-- Time tracking and analysis for problem submission/acceptance
-- Initialising cpp files with templates
-- Eaiser navigation
+- Compilation and running  
+    - Automatic compilation of all cpp files in a folder
+- Faster debugging, which will be done by
+    - Tools to help find discrepant outputs based on a brute force solution and a random input generator
+    - Tools to help find incorrect inputs based on a checker algorithm and a random input generator
+- Contest workspaces, which will allow
+    - Automatic generation of multiple folders and code templates
+    - Marking problems as complete
+    - Seeing an overview of completed problems
+    - Easier navigation of problems
+    - Time tracking of problem completion for post contest analysis
+
 
 ## Technologies
-This was coded in python using the click library
+And Run was coded in Python3 using the Click library.
