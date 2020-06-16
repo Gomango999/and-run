@@ -13,8 +13,9 @@ def file_len(filename):
 # Requires that the file has at least n lines
 def file_head(filename, n):
     with open(filename) as f:
-        assert(len(f.readlines()) >= n)
-        return "".join(f.readlines()[0:n])
+        lines = f.readlines()
+        assert(len(lines) >= n)
+        return "".join(lines[0:n])
 
 
 # Checks to see if filename is an input file
