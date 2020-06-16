@@ -11,9 +11,9 @@ from scripts.files import *
 @click.argument('filename', type=str, default=None)
 def init(type, filename):
     template_path = ""
-    if (type == "standard"):
+    if type == "standard":
          template_path = root_dir() + "/config/templates/standard.cpp"
-    if (type == "cases"):
+    if type == "cases":
          template_path = root_dir() + "/config/templates/cases.cpp"
 
     if filename == None:

@@ -3,6 +3,7 @@ import os
 
 # Returns the number of lines of a file
 def file_len(filename):
+    i = 0
     with open(filename) as f:
         for i, l in enumerate(f):
             pass
