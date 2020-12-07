@@ -54,7 +54,8 @@ def pretty_run(input_filename, cpp_filename):
 @click.command()
 @click.option('-f', '--file', 'cpp_filename', type=click.Path(exists=True, dir_okay=False), default=None)
 @click.option('-i', '--input', 'input_filename', type=click.Path(exists=True, dir_okay=False), default=None)
-def run(cpp_filename, input_filename):
+@click.option('--clean', is_flag=True)
+def run(cpp_filename, input_filename, clean):
     if cpp_filename == None:
         cpp_filename = get_cpp_filename()
     if cpp_filename == None:
@@ -63,7 +64,7 @@ def run(cpp_filename, input_filename):
 
     cpp_fileroot, _ = os.path.splitext(cpp_filename)
 
-    exit_code = os.system(f"g++ -o {cpp_fileroot} -std=c++17 -Wall {cpp_filename}")
+    exit_code = os.system(f"g++-10 -o {cpp_fileroot} -std=c++17 -Wall {cpp_filename} -Wno-misleading-indentation")
     if exit_code != SUCCESS_CODE:
         exit(exit_code);
 
@@ -71,8 +72,12 @@ def run(cpp_filename, input_filename):
         input_filename = get_input_filename()
     if input_filename == None:
         # Run on standard input and output
-        exit(os.system(f"./{cpp_fileroot}"))
+        exit_code = os.system(f"./{cpp_fileroot}")
     else:
         # Run on input file
         exit_code = pretty_run(input_filename, cpp_filename)
-        exit(exit_code)
+
+    # Clean up file
+    if clean:
+        os.system(f"rm ./{cpp_fileroot}")
+    exit(exit_code)
