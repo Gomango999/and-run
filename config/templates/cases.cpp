@@ -1,15 +1,14 @@
-/*
-
-*/
+/* */
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
 typedef pair<int, int> pii;
-typedef vector<int> vi;
 #define x first
 #define y second
 #define pb push_back
 #define all(x) x.begin(), x.end()
+#define sz(x) int(x.size())
+#define rep(i, n) for (int i = 0; i < (n); i++)
 
 void solve() {
 
@@ -20,7 +19,7 @@ int main () {
 	int T = 1;
 	cin >> T;
 	for (int t = 0; t < T; t++) {
-		// printf("Case #%d: ");
+		// printf("Case #%d: ", t+1);
 		solve();
 	}
 }
