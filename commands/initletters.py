@@ -10,10 +10,13 @@ alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 @click.command()
 @click.argument('letter', type=click.Choice(alphabet, case_sensitive=False), default="F")
 def initletters(letter):
-   letter = letter.upper()
-   for ch in alphabet:
-       exit_code = os.system(f"mkdir {ch}")
-       if exit_code == SUCCESS_CODE:
-           print(f"mkdir: {ch}: Successfully made")
-       if ch == letter:
-           break
+    letter = letter.upper()
+    for ch in alphabet:
+        exit_code = os.system(f"mkdir {ch}")
+        if exit_code == SUCCESS_CODE:
+            print(f"mkdir: {ch}: Successfully made")
+        if ch == letter:
+            break
+    exit_code = os.system(f"touch reflection.md")
+    if exit_code == SUCCESS_CODE:
+        print(f"reflection.md: Successfully made")
