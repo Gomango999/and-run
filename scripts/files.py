@@ -11,11 +11,16 @@ def file_len(filename):
 
 # Returns the first n lines of a file.
 # Requires that the file has at least n lines
-def file_head(filename, n):
+def file_head(filename, n, stop_at_newline=False):
     with open(filename) as f:
         lines = f.readlines()
         assert(len(lines) >= n)
-        return "".join(lines[0:n])
+        if stop_at_newline:
+            i = 0
+            while i < n and lines[i] != '\n': i+=1
+            return lines[0:i]
+        else:
+            return lines[0:n]
 
 
 # Checks to see if filename is an input file

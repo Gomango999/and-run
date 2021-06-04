@@ -19,8 +19,9 @@ def pretty_run(input_filename, cpp_filename):
     print_fancy_bar(f"Input | {input_filename}")
     with open(input_filename) as in_file:
         if file_len(input_filename) > MAX_LINES:
-            print(file_head(input_filename, MAX_LINES), end="")
-            print(f"... {file_len(input_filename)-MAX_LINES} more lines")
+            lines = file_head(input_filename, MAX_LINES, stop_at_newline=True)
+            print("".join(lines), end="")
+            print(f"... {file_len(input_filename)-len(lines)} more lines")
         else:
             print(in_file.read(), end="")
 
@@ -64,10 +65,9 @@ def run(cpp_filename, input_filename, clean):
 
     cpp_fileroot, _ = os.path.splitext(cpp_filename)
 
-    exit_code = os.system(f"g++-10 -o {cpp_fileroot} -std=c++17 -Wall {cpp_filename} -Wno-misleading-indentation")
+    exit_code = os.system(f"g++-10 -o {cpp_fileroot} -std=c++17 -Wall {cpp_filename} -Wno-misleading-indentation -Wno-char-subscripts")
     if exit_code != SUCCESS_CODE:
         exit(exit_code);
-
     if input_filename == None:
         input_filename = get_input_filename()
     if input_filename == None:
