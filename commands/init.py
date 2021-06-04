@@ -38,3 +38,5 @@ def init(type, filename):
     else:
         print("Input file failed")
     exit(exit_code)
+
+    os.system(f"atom {filename}")
