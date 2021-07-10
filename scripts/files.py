@@ -15,6 +15,12 @@ def file_head(filename, n, stop_at_newline=False):
     with open(filename) as f:
         lines = f.readlines()
         assert(len(lines) >= n)
+
+        # filter down excessively long lines
+        for i in range(len(lines)):
+            if (len(lines[i]) > 100):
+                lines[i] = lines[i][:50]+"..."
+
         if stop_at_newline:
             i = 0
             while i < n and lines[i] != '\n': i+=1

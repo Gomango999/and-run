@@ -18,12 +18,14 @@ def pretty_run(input_filename, cpp_filename):
     cpp_fileroot, _ = os.path.splitext(cpp_filename)
     print_fancy_bar(f"Input | {input_filename}")
     with open(input_filename) as in_file:
-        if file_len(input_filename) > MAX_LINES:
+        file_length = file_len(input_filename)
+        if file_length > MAX_LINES:
             lines = file_head(input_filename, MAX_LINES, stop_at_newline=True)
             print("".join(lines), end="")
             print(f"... {file_len(input_filename)-len(lines)} more lines")
         else:
-            print(in_file.read(), end="")
+            lines = file_head(input_filename, file_length, stop_at_newline=True)
+            print("".join(lines))
 
     print_fancy_bar(f"Output | {cpp_fileroot}")
     start_time = time.time()
