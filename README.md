@@ -13,7 +13,7 @@ and initletters [A|B|C|...|Z]
 ```
 Generates folders from A to any letter.
 ```sh
-and init [standard|cases]
+and init -[standard|cases]
 ```
 Generates a template cpp file. All templates include define macros and typedefs. Standard just has a main function, whereas cases also includes support by running the program repeatedly on multiple tests.
 
@@ -26,10 +26,8 @@ Generates a template cpp file. All templates include define macros and typedefs.
     - Tools to help find incorrect inputs based on a checker algorithm and a random input generator
 - Generating Contest Workspaces
     - Automatic generation of multiple folders and code templates
-    - Marking problems as complete
-    - Seeing an overview of completed problems
     - Easier navigation of problems
-    - Time tracking of problem completion for post contest analysis
+    - Time tracking of problem completion for post contest analysis ?
 
 
 ## Technologies
