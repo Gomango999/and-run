@@ -38,6 +38,9 @@ def check(file_cpp, file_input, file_expected, verbose):
     check_and_compile_code(file_cpp)
     
     print_fancy_bar(f" {file_cpp} ")
+    print(BOLD, end="")
+    print(f"{'Input':16} {'Expected':16}    [   Status   ]")
+    print(ENDC, end="")
     
     # Go through all input_filenames and run them
     file_executable, _ = os.path.splitext(file_cpp)
@@ -45,10 +48,11 @@ def check(file_cpp, file_input, file_expected, verbose):
     for file_input in input_filenames:
         if file_expected:
             # User specified a custom expected output
+            assert(len(input_filenames) == 1)
             output_filename = file_expected
         else:
             # Otherwise, guess the expected output file
-            output_filename = get_output_filename(file_input)
+            output_filename = inputfile_to_expectedfile(file_input)
             expected_output_exists = os.path.exists(output_filename)
             if not expected_output_exists:
                 continue    
@@ -80,7 +84,7 @@ def check(file_cpp, file_input, file_expected, verbose):
         elif status == "WA": color = RED
         elif status == "RE": color = MAGENTA
         run_time = end_time - start_time
-        in_out_part = f"< {file_input[:14]:14} > {output_filename[:14]:14}"
+        in_out_part = f"{GRAY}< {file_input[:14]:14} > {output_filename[:14]:14}"
         status_part = f"{color}[ {status} | {run_time:.2f}s ]{ENDC}"
         status_line = in_out_part + " "*4 + status_part
         print(status_line)
