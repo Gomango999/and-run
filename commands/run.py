@@ -1,85 +1,110 @@
 import click
 import os
-import timeit
 import time
 
-import sys
-sys.path.append('../')
-from scripts.constants import *
+from commands.compile import check_and_compile_code
+from config.config import config
 from scripts.files import *
+from scripts.helpers import *
 
-def print_fancy_bar(str):
-    print(f"--------[{str}]--------")
-
-# Runs a cpp file on an input file with nicely formatted printing
-# Checks if output file has been updated recently, and if so, prints its contents out
-MAX_LINES = 10 # Max number of lines of the input file to display
-def pretty_run(input_filename, cpp_filename):
-    cpp_fileroot, _ = os.path.splitext(cpp_filename)
-    print_fancy_bar(f"Input | {input_filename}")
-    with open(input_filename) as in_file:
-        file_length = file_len(input_filename)
-        if file_length > MAX_LINES:
-            lines = file_head(input_filename, MAX_LINES, stop_at_newline=True)
-            print("".join(lines), end="")
-            print(f"... {file_len(input_filename)-len(lines)} more lines")
-        else:
-            lines = file_head(input_filename, file_length, stop_at_newline=True)
-            print("".join(lines))
-
-    print_fancy_bar(f"Output | {cpp_fileroot}")
+def pretty_run(file_cpp, file_input):
+    """ Runs a cpp file on an input file with nicely formatted printing
+    - Checks if output file has been updated recently, and if so, prints its 
+      contents out
+    """
+    
+    print_fancy_bar(f" Input | {file_input} ")
+    
+    file_executable, _ = os.path.splitext(file_cpp)
+    execute_command = ""
+    
+    if file_input:
+        # Print first few lines of input (default = 10)
+        os.system(f"head -n {config['input_lines']} {file_input}")
+        
+        # Print how many extra lines are in input
+        file_len = get_file_len(file_input)
+        if (file_len > config['input_lines']):
+            print(GRAY, end="")
+            extra = file_len - config['input_lines']
+            s = "" if extra == 1 else "s"
+            print(f"({extra} more line{s})") # probably bad style, but looks nice :)
+            print(ENDC, end="")
+        
+        execute_command = f"./{file_executable} < {file_input}"
+    else:
+        # Just wait for user input
+        execute_command = f"./{file_executable}"
+    
+    print_fancy_bar(f" Output | {file_executable} ")
+    
+    # Run the code and time it
     start_time = time.time()
-    exit_code = os.system(f"./{cpp_fileroot} < {input_filename}")
+    exit_code = os.system(execute_command)
     end_time = time.time()
-    run_time = end_time-start_time
 
-    #TODO: Check if most likely output file was modified. If so, print from that
-    # Check if output file was modified recently. If so, then print from there
-    output_filename = get_output_filename()
-    if output_filename != None:
-        last_modified = os.path.getmtime(output_filename)
+    # Take a guess at the output file
+    if file_input:
+        file_output = inputfile_to_outputfile(file_input)
+    else:
+        file_outputs = get_output_filenames()
+        if not file_outputs:
+            file_output = None
+        else:
+            file_output = file_outputs[0]
+        
+    # Check to see if we should print from this output file (if it exists)
+    if file_output and os.path.exists(file_output):
+        last_modified = os.path.getmtime(file_output)
         if (start_time <= last_modified <= end_time):
-            # Wrote to output_file
-            print(bcolors.CURSOR_UP_ONE, end="")
-            print(bcolors.ERASE_LINE, end="")
-            print_fancy_bar(f"Output | {cpp_filename} | {output_filename}")
-            with open(output_filename) as out_file:
+            # Replace the previous bar
+            print(CURSOR_UP, end="")
+            print(ERASE_LINE, end="")
+            print_fancy_bar(f" Output | {file_cpp} | {file_output} ")
+            
+            # Print the output file
+            with open(file_output) as out_file:
                 print(out_file.read(), end="");
 
+    # Print out final bar, including runtime
+    run_time = end_time-start_time
+    status = "Done" if exit_code == 0 else "Failed"
+    print_fancy_bar(f" {status} | {run_time:.3f}s ")
+    
+    return exit_code
 
-    if exit_code != SUCCESS_CODE:
-        print_fancy_bar("Failed | {:.2}s".format(run_time))
-    else:
-        print_fancy_bar("Done | {:.2}s".format(run_time))
-    exit_code
+def short_run(file_cpp, file_input):
+    """ Runs a cpp file
+    """
+    file_executable, _ = os.path.splitext(file_cpp)
+    exit_code = os.system(f"./{file_executable} < {file_input}")
+    return exit_code
 
-# Compiles and runs a cpp file
 @click.command()
-@click.option('-f', '--file', 'cpp_filename', type=click.Path(exists=True, dir_okay=False), default=None)
-@click.option('-i', '--input', 'input_filename', type=click.Path(exists=True, dir_okay=False), default=None)
-@click.option('--clean', is_flag=True)
-def run(cpp_filename, input_filename, clean):
-    if cpp_filename == None:
-        cpp_filename = get_cpp_filename()
-    if cpp_filename == None:
-        print("No cpp file found")
-        exit(FAILED_CODE)
-
-    cpp_fileroot, _ = os.path.splitext(cpp_filename)
-
-    exit_code = os.system(f"g++-10 -o {cpp_fileroot} -std=c++17 -Wall {cpp_filename} -Wno-misleading-indentation -Wno-char-subscripts")
-    if exit_code != SUCCESS_CODE:
-        exit(exit_code);
-    if input_filename == None:
-        input_filename = get_input_filename()
-    if input_filename == None:
-        # Run on standard input and output
-        exit_code = os.system(f"./{cpp_fileroot}")
-    else:
-        # Run on input file
-        exit_code = pretty_run(input_filename, cpp_filename)
-
-    # Clean up file
-    if clean:
-        os.system(f"rm ./{cpp_fileroot}")
+@click.argument('file_cpp', type=click.Path(exists=True, dir_okay=False))
+@click.option('-i', '--input', 'file_input', 
+    type=click.Path(exists=True, dir_okay=False), default=None)
+@click.option('-q', '--quiet', is_flag=True)
+def run(file_cpp, file_input, quiet):
+    """ Compiles and runs a cpp file
+        - If no input file is specified, it will find the most likely input file
+    """
+    
+    # Find a suitable input file
+    if not file_input:
+        file_inputs = get_input_filenames()
+        if not file_inputs:
+            file_input = None
+        else:
+            file_input = file_inputs[0]
+    
+    # Compile code if necessary
+    check_and_compile_code(file_cpp)
+        
+    # Run the code   
+    if quiet:
+        exit_code = short_run(file_cpp, file_input)
+    else:     
+        exit_code = pretty_run(file_cpp, file_input)
+        
     exit(exit_code)
