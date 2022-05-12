@@ -24,11 +24,19 @@ def contest(letter):
     
     # Create the notes document
     if not os.path.exists("notes.md"):
-        timenow = time.strftime("%-I:%M", time.localtime())
-        exit_code = os.system(f"echo \"{timenow} start\" > notes.md")
-        
+        exit_code = os.system(f"touch notes.md")
         if exit_code == 0:
             print(f"touch: notes.md: Successfully made")
+            
+            with open("notes.md", "w") as f:
+                timenow = time.strftime("%-I:%M", time.localtime())
+                f.write(f"{timenow} start\n")
+                f.write("\n"*7)
+                f.write("### Problems\n\n")
+                for ch in string.ascii_uppercase:
+                    f.write(f"{ch}. [] \n")
+                    if ch == letter:
+                        break
     else:
         print("touch: notes.md: File exists")
     
