@@ -1,8 +1,10 @@
 config = {    
     # Compiler options - used when compiling code
     "compiler": "g++",
-    "flags": "-std=c++14 -Wall -Wno-misleading-indentation -Wno-char-subscripts",
-    # TODO: Add address sanitisation
+    "flags": ("-Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wconversion " 
+            "-fsanitize=address -fsanitize=undefined " 
+            "-fno-sanitize-recover -fstack-protector -O2 --std=c++14 "
+            "-Wno-misleading-indentation -Wno-char-subscripts"),
     
     # The keywords used to match input, output and expected output files
     "input_key": "in",
