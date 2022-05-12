@@ -84,8 +84,9 @@ def short_run(file_cpp, file_input):
 @click.argument('file_cpp', type=click.Path(exists=True, dir_okay=False))
 @click.option('-i', '--input', 'file_input', 
     type=click.Path(exists=True, dir_okay=False), default=None)
+@click.option('-f', '--force', is_flag=True)
 @click.option('-q', '--quiet', is_flag=True)
-def run(file_cpp, file_input, quiet):
+def run(file_cpp, file_input, force, quiet):
     """ Compiles and runs a cpp file
         - If no input file is specified, it will find the most likely input file
     """
@@ -99,7 +100,7 @@ def run(file_cpp, file_input, quiet):
             file_input = file_inputs[0]
     
     # Compile code if necessary
-    check_and_compile_code(file_cpp)
+    check_and_compile_code(file_cpp, force=force)
         
     # Run the code   
     if quiet:
