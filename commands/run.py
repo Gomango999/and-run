@@ -91,6 +91,10 @@ def run(file_cpp, file_input, force, quiet):
         - If no input file is specified, it will find the most likely input file
     """
     
+    if file_cpp[-4:] != ".cpp":
+        print("Must specify a C++ file")
+        exit(1)
+    
     # Find a suitable input file
     if not file_input:
         file_inputs = get_input_filenames()

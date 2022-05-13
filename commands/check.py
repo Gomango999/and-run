@@ -19,6 +19,10 @@ def check(file_cpp, file_input, file_expected, verbose):
     """ Checks the file against a series of inputs and outputs
         - Does not work for code that uses freopen to write to files
     """
+    if file_cpp[-4:] != ".cpp":
+        print("Must specify a C++ file")
+        exit(1)
+    
     if file_expected:
         if not file_input:
             print("Cannot specify an expected output file with a corresponding input file")

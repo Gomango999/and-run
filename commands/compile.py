@@ -55,6 +55,11 @@ def check_and_compile_code(file_cpp, force=False, erase=True):
 @click.argument('file_cpp', type=click.Path(exists=True, dir_okay=False))
 @click.option('-f', '--force', is_flag=True)
 def compile(file_cpp, force):
+    
+    if file_cpp[-4:] != ".cpp":
+        print("Must specify a C++ file")
+        exit(1)
+        
     print(GRAY, end="")
     check_and_compile_code(file_cpp, force=force, erase=False)
     print(ENDC, end="")

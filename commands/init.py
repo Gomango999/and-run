@@ -14,18 +14,14 @@ def init(file_cpp, cases, light):
     """ Initialises a file to use
     """
     
+    if file_cpp[-4:] != ".cpp":
+        print("Must specify a C++ file")
+        exit(1)
+    
     # Error checking
     if light and cases:
         print("Template can only be \"cases\" or \"light\", not both")
-    
-    # Work out file name
-    if not file_cpp:
-        file_cpp = get_basename() + ".cpp"
-        
-    if file_cpp[-4:] != ".cpp":
-        print("Specified code file is not a C++ file")
-        exit(1)
-    
+            
     # Get the template path
     template_type = ""
     if light:
