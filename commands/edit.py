@@ -8,4 +8,3 @@ def edit():
     root = get_root_dir()
     print(root)
     os.system(f"atom {root}")
-    os.system(f"atom {root}/config/config.py")
