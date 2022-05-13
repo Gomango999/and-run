@@ -4,7 +4,7 @@ config = {
     "flags": ("-Wall -Wextra -Wshadow -Wformat=2 -Wfloat-equal -Wconversion " 
             "-fsanitize=address -fsanitize=undefined " 
             "-fno-sanitize-recover -fstack-protector -O2 --std=c++14 "
-            "-Wno-misleading-indentation -Wno-char-subscripts"),
+            "-Wno-misleading-indentation -Wno-char-subscripts -DL"),
     
     # The keywords used to match input, output and expected output files
     "input_key": "in",
