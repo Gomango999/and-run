@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import click
 
+from commands.edit import edit
 from commands.check import check
 from commands.compile import compile
 from commands.config import config
@@ -12,6 +13,7 @@ from commands.run import run
 def ar():
     pass
 
+ar.add_command(edit)
 ar.add_command(check)
 ar.add_command(compile)
 ar.add_command(config)

@@ -1,9 +1,6 @@
 import click
 import os
 
-import sys
-sys.path.append('../')
-
 from scripts.files import get_root_dir
 from config.config import config as _config # avoid confusion with function name
 
