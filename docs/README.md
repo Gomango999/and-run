@@ -9,6 +9,8 @@ Compiles and runs your code on the most likely input file (typically "in.txt") i
 When it runs, it will print the head of the input file and the output, and give useful statistics such as the time it took for the program to run.
 Just like Makefiles, it will only recompile your code if it detects that it has changed since the last time you have compiled the code. 
 
+If the cpp file name is not specified, it will automatically find the first cpp file alphabetically in the directory to compile.
+
 It supports the following flags
 
 - `-i <filename>` - Specify a new input file.
@@ -25,11 +27,15 @@ and compile add.cpp
 ```
 Compiles the code without running it. Just like `and run`, it will not recompile code if it is not necessary. This behaviour can be overridden with `-f`.
 
+If the cpp file name is not specified, it will automatically find the first cpp file alphabetically in the directory to compile.
+
 ### `and check`
 ```sh
 and check add.cpp
 ```
 Compiles and runs the code against all input files in the current directory that have a corresponding expected output file. For each one, it will display a colored input saying whether the program matches the expected output (AC), didn't match (WA) or crashed (RE). In the case of WA, it will display the difference between the two outputs.
+
+If the cpp file name is not specified, it will automatically find the first cpp file alphabetically in the directory to compile.
 
 ![](images/and_check.png)
 

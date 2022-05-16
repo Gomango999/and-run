@@ -4,15 +4,15 @@ And Run is a command line tool that helps you code faster in competitive program
 > And Run is a tool designed specifically for my personal workflow in competitive programming contest. It is still under development.
 
 ## Features
-__Compile and run code__, and display runtime statistics in one neat package! No more switching between tabs to view all your input and outputs together.
+__Compile and run code__, and display runtime statistics in one neat package! No more fiddling with annoying compile flags, or switching between input and output tags.
 
 ![](docs/images/and_run.png)
 
-__Quickly check your code__ against a series of test cases with one command. Great when you need to do a quick check before submitting.
+__Quickly check your code__ against a series of test cases with one command. Great when you need to do a quick check for a bunch of cases before submitting.
 
 ![](docs/images/and_check.png)
 
-__Initialise code files from templates__, meaning you can get into coding without having the hassle of defining all your macros.
+__Initialise code files from templates__, meaning you can dive straight into coding without the hassle of defining all your macros first.
 
 ![](docs/images/and_init.png)
 
