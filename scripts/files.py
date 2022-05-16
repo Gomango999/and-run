@@ -98,6 +98,18 @@ def get_expected_filenames():
         - E.g. ans.txt, beachans3.txt, cat.ans
     """
     return find_filenames_with_key(config["expected_key"])
+    
+def get_cpp_filenames():
+    """ Returns a sorted list of cpp files in the current directory
+    """
+    filenames = []
+    for filename in os.listdir(os.getcwd()):
+        if re.search(f".cpp$", filename):
+            filenames.append(filename)
+            
+    filenames.sort()
+    
+    return filenames
 
 def replace_key(filename, key1, key2):
     """ Replaces the key1 with key2 with another one

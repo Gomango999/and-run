@@ -5,6 +5,7 @@ import subprocess
 import time
 
 from config.config import config
+from scripts.files import get_cpp_filenames
 from scripts.helpers import *
 
 def check_and_compile_code(file_cpp, force=False, erase=True):
@@ -49,12 +50,24 @@ def check_and_compile_code(file_cpp, force=False, erase=True):
         
     else:
         # Did not compile again, since the code file has not changed
-        print(f"{YELLOW}Warning{ENDC}: No changes since last compile")
+        print(f"{YELLOW}Warning{ENDC}: No changes to {file_cpp} since last compile")
 
 @click.command()
-@click.argument('file_cpp', type=click.Path(exists=True, dir_okay=False))
+@click.argument('cpp_files', type=click.Path(exists=True, dir_okay=False), nargs=-1)
 @click.option('-f', '--force', is_flag=True)
-def compile(file_cpp, force):
+def compile(cpp_files, force):
+    
+    if len(cpp_files) > 1:
+        print("Cannot compile and run more than one C++ file")
+        exit(1)
+    elif len(cpp_files) == 0:
+        # Find cpp files in directory
+        cpp_files = get_cpp_filenames()
+        if not cpp_files:
+            print("Could not find a C++ file to compile")
+            exit(1)
+            
+    file_cpp = cpp_files[0]
     
     if file_cpp[-4:] != ".cpp":
         print("Must specify a C++ file")

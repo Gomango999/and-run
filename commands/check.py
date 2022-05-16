@@ -9,16 +9,29 @@ from scripts.files import *
 from scripts.helpers import *
 
 @click.command()
-@click.argument('file_cpp', type=click.Path(exists=True, dir_okay=False))
+@click.argument('cpp_files', type=click.Path(exists=True, dir_okay=False), nargs=-1)
 @click.option('-i', '--input', 'file_input', 
     type=click.Path(exists=True, dir_okay=False), default=None)
 @click.option('-e', '--expected', 'file_expected', 
     type=click.Path(exists=True, dir_okay=False), default=None)
 @click.option('-v', '--verbose', is_flag=True)
-def check(file_cpp, file_input, file_expected, verbose):
+def check(cpp_files, file_input, file_expected, verbose):
     """ Checks the file against a series of inputs and outputs
         - Does not work for code that uses freopen to write to files
     """
+    
+    if len(cpp_files) > 1:
+        print("Cannot compile and run more than one C++ file")
+        exit(1)
+    elif len(cpp_files) == 0:
+        # Find cpp files in directory
+        cpp_files = get_cpp_filenames()
+        if not cpp_files:
+            print("Could not find a C++ file to compile")
+            exit(1)
+            
+    file_cpp = cpp_files[0]
+    
     if file_cpp[-4:] != ".cpp":
         print("Must specify a C++ file")
         exit(1)
@@ -37,7 +50,6 @@ def check(file_cpp, file_input, file_expected, verbose):
             print("No input files found")
             exit(1)
             
-
     # Compile code if necessary
     check_and_compile_code(file_cpp)
     
@@ -82,6 +94,7 @@ def check(file_cpp, file_input, file_expected, verbose):
                 # Print out the difference between the two
                 diff_cmd = config["diff_command"].format("tmp.out", output_filename)
                 os.system(diff_cmd)
+                print()
         
         # Print the status line
         if status == "AC":   color = GREEN

@@ -21,6 +21,7 @@ def pretty_run(file_cpp, file_input):
     if file_input:
         # Print first few lines of input (default = 10)
         os.system(f"head -n {config['input_lines']} {file_input}")
+        print()
         
         # Print how many extra lines are in input
         file_len = get_file_len(file_input)
@@ -81,17 +82,29 @@ def short_run(file_cpp, file_input):
     return exit_code
 
 @click.command()
-@click.argument('file_cpp', type=click.Path(exists=True, dir_okay=False))
+@click.argument('cpp_files', type=click.Path(exists=True, dir_okay=False), nargs=-1)
 @click.option('-i', '--input', 'file_input', 
     type=click.Path(exists=True, dir_okay=False), default=None)
-@click.option('-f', '--force', is_flag=True)
+@click.option('-m', '--make', is_flag=True)
 @click.option('-q', '--quiet', is_flag=True)
 @click.option('-c', '--clean', is_flag=True)
-def run(file_cpp, file_input, force, quiet, clean):
+def run(cpp_files, file_input, make, quiet, clean):
     """ Compiles and runs a cpp file
         - If no input file is specified, it will find the most likely input file
     """
     
+    if len(cpp_files) > 1:
+        print("Cannot compile and run more than one C++ file")
+        exit(1)
+    elif len(cpp_files) == 0:
+        # Find cpp files in directory
+        cpp_files = get_cpp_filenames()
+        if not cpp_files:
+            print("Could not find a C++ file to compile")
+            exit(1)
+        
+    file_cpp = cpp_files[0]
+            
     if file_cpp[-4:] != ".cpp":
         print("Must specify a C++ file")
         exit(1)
@@ -105,7 +118,7 @@ def run(file_cpp, file_input, force, quiet, clean):
             file_input = file_inputs[0]
     
     # Compile code if necessary
-    check_and_compile_code(file_cpp, force=force)
+    check_and_compile_code(file_cpp, force=make)
         
     # Run the code   
     if quiet:
